@@ -158,7 +158,7 @@ export const invoiceTime = asyncHandler(async (req, res, next) => {
     method: "post",
     url: "https://merchant.qpay.mn/v2/auth/token",
     headers: {
-      Authorization: `Basic U0VEVTowYjRrNDJsRA==`,
+      Authorization: `Basic Qk9PU1RFUlNfTU46UzhFZ1ROM2Y=`,
     },
   })
     .then((response) => {
@@ -171,13 +171,13 @@ export const invoiceTime = asyncHandler(async (req, res, next) => {
           Authorization: `Bearer ${token}`,
         },
         data: {
-          invoice_code: "SEDU_INVOICE",
+          invoice_code: "BOOSTERS_MN_INVOICE",
           sender_invoice_no: "12345678",
-          invoice_receiver_code: `${profile.name}`,
-          invoice_description: `Sedu charge ${profile.name}`,
+          invoice_receiver_code: `${profile.phone}`,
+          invoice_description: `Booster charge ${profile.phone}`,
 
           amount: req.body.amount,
-          callback_url: `https://seduback.com/api/v1/users/callbacks/${req.params.id}/${req.body.amount}`,
+          callback_url: `https://www.boostersback.com/api/v1/users/callbacks/${req.params.id}/${req.body.amount}`,
         },
       })
         .then(async (response) => {
@@ -206,7 +206,7 @@ export const invoiceCheck = asyncHandler(async (req, res) => {
     method: "post",
     url: "https://merchant.qpay.mn/v2/auth/token",
     headers: {
-      Authorization: `Basic U0VEVTowYjRrNDJsRA==`,
+      Authorization: `Basic Qk9PU1RFUlNfTU46UzhFZ1ROM2Y=`,
     },
   })
     .then((response) => {
@@ -222,7 +222,7 @@ export const invoiceCheck = asyncHandler(async (req, res) => {
           object_id: req.params.id,
           page_number: 1,
           page_limit: 100,
-          callback_url: `https://seduback.com/api/v1/users/check/challbacks/${req.params.id}/${req.params.numId}`,
+          callback_url: `https://www.boostersback.com/api/v1/users/check/challbacks/${req.params.id}/${req.params.numId}`,
         },
       })
         .then(async (response) => {

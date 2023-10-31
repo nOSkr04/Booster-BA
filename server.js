@@ -31,7 +31,14 @@ const app = express();
 connectDB();
 
 // Манай рест апиг дуудах эрхтэй сайтуудын жагсаалт :
-var whitelist = ["http://localhost:3000", "http://192.168.1.8:3000"];
+var whitelist = [
+  "http://localhost:3000",
+  "http://192.168.1.8:3000",
+  "boostersback.com",
+  "www.boostersback.com",
+  "www.boosters.mn",
+  "boosters.mn",
+];
 
 // Өөр домэйн дээр байрлах клиент вэб аппуудаас шаардах шаардлагуудыг энд тодорхойлно
 var corsOptions = {
