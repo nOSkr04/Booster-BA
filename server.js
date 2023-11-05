@@ -38,6 +38,7 @@ var whitelist = [
   "www.boostersback.com",
   "www.boosters.mn",
   "boosters.mn",
+  "https://www.boosters.mn",
 ];
 
 // Өөр домэйн дээр байрлах клиент вэб аппуудаас шаардах шаардлагуудыг энд тодорхойлно
