@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 import paginate from "../utils/paginate.js";
 import axios from "axios";
 import Wallet from "../models/Wallet.js";
+import { format, startOfDay } from "date-fns";
 
 export const authMeUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.userId);
@@ -85,18 +86,155 @@ export const getUsers = asyncHandler(async (req, res, next) => {
   const select = req.query.select;
 
   ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-
   const pagination = await paginate(page, limit, User);
 
   const users = await User.find(req.query, select)
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
-
   res.status(200).json({
     success: true,
     data: users,
     pagination,
+    total: pagination.total,
+    pageCount: pagination.pageCount,
+  });
+});
+
+export const dashboard = asyncHandler(async (req, res, next) => {
+  const users = await User.find();
+  const filterPayed = users.filter((user) => user.isPayment);
+  const startDate = new Date("2023-11-013");
+  const endDate = new Date();
+
+  // Generate an array of dates between startDate and endDate
+  const dateRange = [];
+  let currentDate = startDate;
+
+  while (currentDate <= endDate) {
+    dateRange.push(currentDate);
+    currentDate = new Date(currentDate);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  const aggregationPipeline = [
+    {
+      $match: {
+        paymentDate: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+        // Add other query conditions as needed
+        ...req.query,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$paymentDate" },
+          month: { $month: "$paymentDate" },
+          day: { $dayOfMonth: "$paymentDate" },
+        },
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: {
+          $dateFromParts: {
+            year: "$_id.year",
+            month: "$_id.month",
+            day: "$_id.day",
+          },
+        },
+        count: 1,
+      },
+    },
+  ];
+  const aggregationPipeline1 = [
+    {
+      $match: {
+        createdAt: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+        // Add other query conditions as needed
+        ...req.query,
+      },
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$createdAt" },
+          month: { $month: "$createdAt" },
+          day: { $dayOfMonth: "$createdAt" },
+        },
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: {
+          $dateFromParts: {
+            year: "$_id.year",
+            month: "$_id.month",
+            day: "$_id.day",
+          },
+        },
+        count: 1,
+      },
+    },
+  ];
+
+  const dailyUserCounts = await User.aggregate(aggregationPipeline);
+  const dailyUserCreateCounts = await User.aggregate(aggregationPipeline1);
+  const filteredDailyUserCounts = dateRange.map((date) => {
+    const matchingRecord = dailyUserCounts.find(
+      (record) =>
+        startOfDay(record.date).getTime() === startOfDay(date).getTime()
+    );
+
+    return {
+      date: format(date, "MM/dd"),
+      count: matchingRecord ? matchingRecord.count : 0,
+    };
+  });
+  const filteredDailyUserCounts1 = dateRange.map((date) => {
+    const matchingRecord = dailyUserCreateCounts.find(
+      (record) =>
+        startOfDay(record.date).getTime() === startOfDay(date).getTime()
+    );
+
+    return {
+      date: format(date, "MM/dd"),
+      count: matchingRecord ? matchingRecord.count : 0,
+    };
+  });
+
+  const dateStrings1 = filteredDailyUserCounts1.map((record) => record.date);
+  const countNumbers1 = filteredDailyUserCounts1.map((record) => record.count);
+
+  const dashedStatic1 = {
+    dateStrings: dateStrings1,
+    countNumbers: countNumbers1,
+  };
+  const dateStrings = filteredDailyUserCounts.map((record) => record.date);
+  const countNumbers = filteredDailyUserCounts.map((record) => record.count);
+
+  const dashedStatic = {
+    dateStrings: dateStrings,
+    countNumbers: countNumbers,
+  };
+
+  res.status(200).json({
+    allUserCount: users.length,
+    netWorth: filterPayed.length * 20000,
+    payedUser: filterPayed.length,
+    unpayedUser: users.length - filterPayed.length,
+    dailyUserCounts: dashedStatic,
+    dailyUserCreateCounts: dashedStatic1,
   });
 });
 

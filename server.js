@@ -39,6 +39,8 @@ var whitelist = [
   "www.boosters.mn",
   "boosters.mn",
   "https://www.boosters.mn",
+  "https://boostersadmin.vercel.app",
+  "https://www.boostersadmin.vercel.app",
 ];
 
 // Өөр домэйн дээр байрлах клиент вэб аппуудаас шаардах шаардлагуудыг энд тодорхойлно

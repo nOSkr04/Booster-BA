@@ -14,6 +14,7 @@ import {
   invoiceTime,
   chargeTime,
   invoiceCheck,
+  dashboard,
 } from "../controller/users.js";
 
 const router = Router();
@@ -22,6 +23,7 @@ const router = Router();
 router.route("/register").post(register);
 router.route("/login").post(login);
 router.route("/logout").get(logout);
+router.route("/dashboard").get(dashboard);
 // router.route("/updatePrivacy").post(updatePrivacy);
 
 router.route("/callbacks/:id/:numId").get(chargeTime);
