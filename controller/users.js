@@ -5,7 +5,7 @@ import paginate from "../utils/paginate.js";
 import axios from "axios";
 import Wallet from "../models/Wallet.js";
 import { format, startOfDay } from "date-fns";
-
+import bcrypt from "bcrypt";
 export const authMeUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.userId);
   if (!user) {
@@ -398,5 +398,22 @@ export const chargeTime = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: profile,
+  });
+});
+
+export const updatePassword = asyncHandler(async (req, res, next) => {
+  const { password, cpassword } = req.body;
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+  if (password !== cpassword) {
+    throw new MyError("Нууц үг тохирохгүй байна", 401);
+  }
+  user.password = password;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    data: user,
   });
 });
