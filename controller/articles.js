@@ -5,7 +5,6 @@ import asyncHandler from "express-async-handler";
 import paginate from "../utils/paginate.js";
 import User from "../models/User.js";
 import Category from "../models/Category.js";
-import Video from "../models/Video.js";
 // api/v1/articles
 export const getArticles = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.userId);
@@ -20,11 +19,7 @@ export const getArticles = asyncHandler(async (req, res, next) => {
   const articles = await Article.find(req.query, select)
     .sort(sort)
     .skip(pagination.start - 1)
-    .limit(limit)
-    .populate({
-      model: "Video",
-      path: "video",
-    });
+    .limit(limit);
   const watchArticles = articles.map((article) => ({
     ...article.toObject(),
     isSeen: user.watched.includes(article._id),
@@ -61,7 +56,7 @@ export const getArticle = asyncHandler(async (req, res, next) => {
 
 export const getCategoryArticles = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 2;
+  const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
   const select = req.query.select;
 
@@ -77,7 +72,6 @@ export const getCategoryArticles = asyncHandler(async (req, res, next) => {
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit);
-
   res.status(200).json({
     success: true,
     count: articles.length,
@@ -92,10 +86,6 @@ export const createArticle = asyncHandler(async (req, res, next) => {
   if (!category) {
     throw new MyError(req.body.category + " ID-тэй категори байхгүй!", 400);
   }
-  const video = await Video.findById(req.body.video);
-
-  category.lessonsDuration = category.lessonsDuration + video.duration;
-  category.lessonsCount += 1;
 
   category.save();
   const article = await Article.create(req.body);

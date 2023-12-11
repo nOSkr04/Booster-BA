@@ -9,8 +9,11 @@ const ArticleSchema = new mongoose.Schema(
       type: String,
     },
     video: {
-      type: mongoose.Schema.ObjectId,
-      ref: "Video",
+      url: String,
+      image: String,
+      blurHash: String,
+      duration: Number,
+      thumbnail: String,
     },
     seen: {
       type: Number,
