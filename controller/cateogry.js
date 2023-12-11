@@ -19,27 +19,7 @@ export const getCategorys = asyncHandler(async (req, res, next) => {
   const categorys = await Category.find(req.query, select)
     .sort(sort)
     .skip(pagination.start - 1)
-    .limit(limit)
-    .populate({
-      model: "Video",
-      path: "video",
-    });
-  const watchCategorys = categorys.map((category) => ({
-    ...category.toObject(),
-    isSeen: user.watched.includes(category._id),
-  }));
-
-  console.log(watchCategorys, "aa");
-
-  // const userLikes = await Like.find({
-  //   createUser: req.query.userId,
-  // });
-  // const userMap = userLikes.map((res) => `${res.post}`);
-
-  // const postWithIsLiked = posts.map((post) => ({
-  //   ...post.toObject(),
-  //   isLiked: userMap.includes(post._id.toString()),
-  // }));
+    .limit(limit);
 
   res.status(200).json({
     success: true,
