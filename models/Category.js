@@ -1,0 +1,36 @@
+import mongoose from "mongoose";
+
+const CategorySchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
+    lessonsCount: {
+      type: Number,
+      default: 0,
+    },
+    lessonsDuration: {
+      type: Number,
+      default: 0,
+    },
+    createUser: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+    updateUser: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+);
+
+export default mongoose.model("Category", CategorySchema);

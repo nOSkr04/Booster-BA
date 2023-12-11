@@ -4,6 +4,7 @@ import MyError from "../utils/myError.js";
 import asyncHandler from "express-async-handler";
 import paginate from "../utils/paginate.js";
 import User from "../models/User.js";
+import Category from "../models/Category.js";
 
 // api/v1/articles
 export const getArticles = asyncHandler(async (req, res, next) => {
@@ -30,16 +31,6 @@ export const getArticles = asyncHandler(async (req, res, next) => {
   }));
 
   console.log(watchArticles, "aa");
-
-  // const userLikes = await Like.find({
-  //   createUser: req.query.userId,
-  // });
-  // const userMap = userLikes.map((res) => `${res.post}`);
-
-  // const postWithIsLiked = posts.map((post) => ({
-  //   ...post.toObject(),
-  //   isLiked: userMap.includes(post._id.toString()),
-  // }));
 
   res.status(200).json({
     success: true,
@@ -68,7 +59,39 @@ export const getArticle = asyncHandler(async (req, res, next) => {
   });
 });
 
+export const getCategoryArticles = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 2;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, limit, Article);
+
+  //req.query, select
+  const articles = await Article.find(
+    { ...req.query, category: req.params.categoryId },
+    select
+  )
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit);
+
+  res.status(200).json({
+    success: true,
+    count: articles.length,
+    data: articles,
+    pagination,
+  });
+});
+
 export const createArticle = asyncHandler(async (req, res, next) => {
+  const category = await Category.findById(req.body.category);
+
+  if (!category) {
+    throw new MyError(req.body.category + " ID-тэй категори байхгүй!", 400);
+  }
   const article = await Article.create(req.body);
 
   res.status(200).json({

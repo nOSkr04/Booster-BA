@@ -20,6 +20,7 @@ import usersRoutes from "./routes/users.js";
 import walletsRoutes from "./routes/wallets.js";
 import mediasRoutes from "./routes/media.js";
 import articlesRoutes from "./routes/articles.js";
+import categoryRoutes from "./routes/categorys.js";
 // Аппын тохиргоог process.env рүү ачаалах
 dotenv.config({ path: "./config/config.env" });
 
@@ -105,6 +106,7 @@ app.use("/users", usersRoutes);
 app.use("/wallets", walletsRoutes);
 app.use("/lessons", articlesRoutes);
 app.use("/media", mediasRoutes);
+app.use("/category", categoryRoutes);
 // Алдаа үүсэхэд барьж авч алдааны мэдээллийг клиент тал руу автоматаар мэдээлнэ
 app.use(errorHandler);
 
