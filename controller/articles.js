@@ -5,7 +5,7 @@ import asyncHandler from "express-async-handler";
 import paginate from "../utils/paginate.js";
 import User from "../models/User.js";
 import Category from "../models/Category.js";
-
+import Video from "../models/Video.js";
 // api/v1/articles
 export const getArticles = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.userId);
@@ -92,6 +92,10 @@ export const createArticle = asyncHandler(async (req, res, next) => {
   if (!category) {
     throw new MyError(req.body.category + " ID-тэй категори байхгүй!", 400);
   }
+  const video = await Video.findById(req.body.video);
+  category.lessonsDuration = category.lessonsDuration + video.duration;
+
+  category.save();
   const article = await Article.create(req.body);
 
   res.status(200).json({
