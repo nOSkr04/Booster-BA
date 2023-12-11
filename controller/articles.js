@@ -36,16 +36,13 @@ export const getArticles = asyncHandler(async (req, res, next) => {
 });
 
 export const getArticle = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.userId);
   const article = await Article.findById(req.params.id);
 
   if (!article) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
   }
 
-  user.watched = [...user.watched, article._id];
   article.seen += 1;
-  user.save();
   article.save();
 
   res.status(200).json({
