@@ -16,6 +16,10 @@ const CategorySchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    image: {
+      url: String,
+      blurHash: String,
+    },
     createUser: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
