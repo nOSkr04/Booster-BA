@@ -26,6 +26,12 @@ const UserSchema = new mongoose.Schema({
     enum: ["user", "operator", "admin"],
     default: "user",
   },
+  watched: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Article",
+    },
+  ],
   invoiceId: {
     type: String,
   },

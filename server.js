@@ -19,6 +19,7 @@ import connectDB from "./config/db.js";
 import usersRoutes from "./routes/users.js";
 import walletsRoutes from "./routes/wallets.js";
 import mediasRoutes from "./routes/media.js";
+import articlesRoutes from "./routes/articles.js";
 // Аппын тохиргоог process.env рүү ачаалах
 dotenv.config({ path: "./config/config.env" });
 
@@ -100,8 +101,9 @@ var accessLogStream = rfs.createStream("access.log", {
 app.use(morgan("combined", { stream: accessLogStream }));
 
 // REST API RESOURSE
-app.use("/api/v1/users", usersRoutes);
-app.use("/api/v1/wallets", walletsRoutes);
+app.use("/users", usersRoutes);
+app.use("/wallets", walletsRoutes);
+app.use("/lessons", articlesRoutes);
 app.use("/media", mediasRoutes);
 // Алдаа үүсэхэд барьж авч алдааны мэдээллийг клиент тал руу автоматаар мэдээлнэ
 app.use(errorHandler);
