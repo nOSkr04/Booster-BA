@@ -93,7 +93,9 @@ export const createArticle = asyncHandler(async (req, res, next) => {
     throw new MyError(req.body.category + " ID-тэй категори байхгүй!", 400);
   }
   const video = await Video.findById(req.body.video);
+
   category.lessonsDuration = category.lessonsDuration + video.duration;
+  category.lessonsCount += 1;
 
   category.save();
   const article = await Article.create(req.body);
@@ -101,6 +103,7 @@ export const createArticle = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: article,
+    category: category,
   });
 });
 
