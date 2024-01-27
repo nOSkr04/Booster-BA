@@ -26,6 +26,14 @@ const UserSchema = new mongoose.Schema({
     enum: ["user", "operator", "admin"],
     default: "user",
   },
+  gifted: {
+    type: Boolean,
+    default: false,
+  },
+  voucher: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Voucher",
+  },
   watched: [
     {
       type: mongoose.Schema.ObjectId,

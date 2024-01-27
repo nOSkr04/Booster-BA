@@ -6,6 +6,7 @@ import axios from "axios";
 import Wallet from "../models/Wallet.js";
 import { format, startOfDay } from "date-fns";
 import bcrypt from "bcrypt";
+import Voucher from "../models/Voucher.js";
 export const authMeUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.userId);
   if (!user) {
@@ -415,5 +416,35 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: user,
+  });
+});
+
+export const userVoucherActive = asyncHandler(async (req, res) => {
+  const { code } = req.body;
+  const user = await User.findById(req.userId);
+  const voucher = await Voucher.findOne({ code: code });
+  if (!voucher) {
+    throw new MyError("Буруу код", 404);
+  }
+  if (!user) {
+    throw new MyError("Эхлээд нэвтрэнэ үү", 404);
+  }
+  if (user.isPayment) {
+    throw new MyError("Танд эрх бна", 404);
+  }
+  if (voucher.active) {
+    throw new MyError("Оруулсан код", 404);
+  }
+  user.isPayment = true;
+  user.gifted = true;
+  user.voucher = voucher._id;
+  user.paymentDate = new Date();
+  user.activeAt = new Date();
+  voucher.active = true;
+  user.save();
+  voucher.save();
+  res.status(200).json({
+    data: user,
+    success: true,
   });
 });

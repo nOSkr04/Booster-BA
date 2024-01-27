@@ -16,6 +16,7 @@ import {
   invoiceCheck,
   dashboard,
   updatePassword,
+  userVoucherActive,
 } from "../controller/users.js";
 
 const router = Router();
@@ -38,6 +39,7 @@ router
   .get(authorize("admin"), getUsers)
   .post(authorize("admin"), createUser);
 router.route("/me").get(protect, authMeUser);
+router.route("/voucher").post(protect, userVoucherActive);
 router.route("/invoice/:id").post(invoiceTime);
 router.route("/:id").get(getUser).put(updateUser).delete(protect, deleteUser);
 
