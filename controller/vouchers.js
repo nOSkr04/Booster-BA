@@ -9,10 +9,11 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
     code: uuidv4().substr(0, 8),
   }));
 
-  Voucher.insertMany(vouchers);
+  const inserted = await Voucher.insertMany(vouchers);
 
   res.status(200).json({
     success: true,
+    inserted,
   });
 });
 
