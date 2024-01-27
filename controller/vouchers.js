@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Voucher from "../models/Voucher.js";
 import { v4 as uuidv4 } from "uuid";
+import paginate from "../utils/paginate.js";
 // createVoucher
 export const createVoucher = asyncHandler(async (req, res, next) => {
   const { length } = req.body;
