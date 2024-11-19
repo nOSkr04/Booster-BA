@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isBoughtBook: {
+    type: Boolean,
+    default: false,
+  },
   role: {
     type: String,
     enum: ["user", "operator", "admin"],

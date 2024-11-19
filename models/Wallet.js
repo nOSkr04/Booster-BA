@@ -9,6 +9,10 @@ const WalletSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    isPayed: {
+      type: Boolean,
+      default: false,
+    },
     qrImage: {
       type: String,
       default: null,
