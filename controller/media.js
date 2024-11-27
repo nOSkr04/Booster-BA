@@ -9,6 +9,7 @@ import { setBlurHash } from "../utils/gm.js";
 import Video from "../models/Video.js";
 import fs from "fs";
 import ffmpeg from "fluent-ffmpeg";
+import MyError from "../utils/myError.js";
 
 export const uploadPhoto = asyncHandler(async (req, res, next) => {
   const file = req.files.file;
@@ -101,4 +102,27 @@ export const uploadVideo = asyncHandler(async (req, res) => {
 
       res.status(200).json(video);
     });
+});
+
+export const uploadPhotoByCloud = asyncHandler(async (req, res) => {
+  const file = req.files.file;
+  if (!file) {
+    throw new MyError("Файл олдсонгүй", 400);
+  }
+  const blurHash = await setBlurHash(file.data);
+  file.name = `${uuidv4()}.png`;
+  file.mv(`./public/banner/${file.name}`, async (err) => {
+    throw new MyError("Problem with file upload", 500);
+  });
+  const fileUrl = `https://server.boosters.mn/banner/${file.name}`;
+  const image = await Image.create({
+    url: fileUrl,
+    blurHash: blurHash,
+  });
+  res.status(200).json({
+    success: true,
+    url: fileUrl,
+    blurHash: blurHash,
+    image: image._id,
+  });
 });

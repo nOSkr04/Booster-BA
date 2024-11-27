@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { uploadPhoto, uploadVideo } from "../controller/media.js";
+import {
+  uploadPhoto,
+  uploadPhotoByCloud,
+  uploadVideo,
+} from "../controller/media.js";
 
 const router = Router();
 
@@ -7,5 +11,6 @@ const router = Router();
 
 router.route("/photo").post(uploadPhoto);
 router.route("/video").post(uploadVideo);
+router.route("/image").post(uploadPhotoByCloud);
 
 export default router;
