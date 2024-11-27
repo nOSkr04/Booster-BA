@@ -37,6 +37,7 @@ connectDB();
 // Манай рест апиг дуудах эрхтэй сайтуудын жагсаалт :
 var whitelist = [
   "http://localhost:3000",
+  "http://localhost:8001",
   "http://192.168.1.8:3000",
   "boostersback.com",
   "www.boostersback.com",
@@ -53,14 +54,20 @@ var whitelist = [
 var corsOptions = {
   // Ямар ямар домэйнээс манай рест апиг дуудаж болохыг заана
   origin: function (origin, callback) {
-    callback(null, true);
+    if (origin === undefined || whitelist.indexOf(origin) !== -1) {
+      // Энэ домэйнээс манай рест рүү хандахыг зөвшөөрнө
+      callback(null, true);
+    } else {
+      // Энэ домэйнд хандахыг хориглоно.
+      callback(new Error("Horigloj baina.."));
+    }
   },
   // Клиент талаас эдгээр http header-үүдийг бичиж илгээхийг зөвшөөрнө
   allowedHeaders: "Authorization, Set-Cookie, Content-Type",
   // Клиент талаас эдгээр мэссэжүүдийг илгээхийг зөвөөрнө
   methods: "GET, POST, PUT, DELETE",
   // Клиент тал authorization юмуу cookie мэдээллүүдээ илгээхийг зөвшөөрнө
-  credentials: false,
+  credentials: true,
 };
 
 // index.html-ийг public хавтас дотроос ол гэсэн тохиргоо
