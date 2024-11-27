@@ -60,7 +60,7 @@ var corsOptions = {
   // Клиент талаас эдгээр мэссэжүүдийг илгээхийг зөвөөрнө
   methods: "GET, POST, PUT, DELETE",
   // Клиент тал authorization юмуу cookie мэдээллүүдээ илгээхийг зөвшөөрнө
-  credentials: true,
+  credentials: false,
 };
 
 // index.html-ийг public хавтас дотроос ол гэсэн тохиргоо
