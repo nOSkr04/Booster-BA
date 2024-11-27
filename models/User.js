@@ -37,10 +37,6 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  voucher: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Voucher",
-  },
   watched: [
     {
       type: mongoose.Schema.ObjectId,
