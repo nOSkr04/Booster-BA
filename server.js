@@ -68,7 +68,8 @@ var corsOptions = {
 };
 
 // index.html-ийг public хавтас дотроос ол гэсэн тохиргоо
-app.use(express.static(new URL("public", import.meta.url).pathname));
+// app.use(express.static(new URL("public", import.meta.url).pathname));
+app.use(express.static(path.join(process.cwd(), "public")));
 
 // Express rate limit : Дуудалтын тоог хязгаарлана
 const limiter = rateLimit({
