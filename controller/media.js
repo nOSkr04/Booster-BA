@@ -110,7 +110,7 @@ export const uploadPhotoByCloud = asyncHandler(async (req, res) => {
     throw new MyError("Файл олдсонгүй", 400);
   }
   const blurHash = await setBlurHash(file.data);
-  file.name = `${uuidv4()}.png`;
+  file.name = `banner_${Date.now()}${path.parse(file.name).ext}`;
   file.mv(`./public/banner/${file.name}`, async (err) => {
     throw new MyError("Problem with file upload", 500);
   });
