@@ -11,12 +11,14 @@ import {
   deleteUser,
   logout,
   authMeUser,
-  invoiceTime,
-  chargeTime,
-  invoiceCheck,
   dashboard,
   updatePassword,
   userVoucherActive,
+  invoiceByBookConfirmed,
+  createInvoiceByBook,
+  invoiceByBookLesson,
+  createInvoiceByLesson,
+  invoiceByQpayCheck,
 } from "../controller/users.js";
 
 const router = Router();
@@ -27,10 +29,8 @@ router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/dashboard").get(dashboard);
 router.route("/update-password/:id").post(updatePassword);
-// router.route("/updatePrivacy").post(updatePrivacy);
-
-router.route("/callbacks/:id/:numId").get(chargeTime);
-router.route("/check/challbacks/:id/:numId").get(invoiceCheck);
+router.route("/callback/:walletId/:userId/book").get(invoiceByBookConfirmed);
+router.route("/callback/:walletId/:userId/lesson").get(invoiceByBookLesson);
 router.use(protect);
 
 //"/api/v1/users"
@@ -40,7 +40,9 @@ router
   .post(authorize("admin"), createUser);
 router.route("/me").get(protect, authMeUser);
 router.route("/voucher").post(protect, userVoucherActive);
-router.route("/invoice/:id").post(invoiceTime);
+router.route("/create-invoice-by-book").post(createInvoiceByBook);
+router.route("/create-invoice-by-lesson").post(createInvoiceByLesson);
+router.route("/invoice-check/:id").get(invoiceByQpayCheck);
 router.route("/:id").get(getUser).put(updateUser).delete(protect, deleteUser);
 
 export default router;

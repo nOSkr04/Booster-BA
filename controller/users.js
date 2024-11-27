@@ -7,6 +7,7 @@ import Wallet from "../models/Wallet.js";
 import { format, startOfDay } from "date-fns";
 import bcrypt from "bcrypt";
 import Voucher from "../models/Voucher.js";
+
 export const authMeUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.userId);
   if (!user) {
@@ -303,54 +304,9 @@ export const getToken = async () => {
   return data.access_token;
 };
 
-export const invoiceTime = asyncHandler(async (req, res, next) => {
-  const profile = await User.findById(req.params.id);
+export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
+  const profile = await User.findById(req.userId);
   const wallet = await Wallet.create({});
-  // await axios({
-  //   method: "post",
-  //   url: "https://merchant.qpay.mn/v2/auth/token",
-  //   headers: {
-  //     Authorization: `Basic Qk9PU1RFUlNfTU46UzhFZ1ROM2Y=`,
-  //   },
-  // })
-  //   .then((response) => {
-  //     const token = response.data.access_token;
-
-  //     axios({
-  //       method: "post",
-  //       url: "https://merchant.qpay.mn/v2/invoice",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       data: {
-  //         invoice_code: "BOOSTERS_MN_INVOICE",
-  //         sender_invoice_no: "12345678",
-  //         invoice_receiver_code: `${profile.phone}`,
-  //         invoice_description: `Booster charge ${profile.phone}`,
-
-  //         amount: req.body.amount,
-  //         callback_url: `https://www.boostersback.com/api/v1/users/callbacks/${req.params.id}/${req.body.amount}`,
-  //       },
-  //     })
-  //       .then(async (response) => {
-  //         req.body.urls = response.data.urls;
-  //         req.body.qrImage = response.data.qr_image;
-  //         req.body.invoiceId = response.data.invoice_id;
-  //         const wallet = await Wallet.create(req.body);
-  //         profile.invoiceId = wallet._id;
-  //         profile.save();
-  //         res.status(200).json({
-  //           success: true,
-  //           data: wallet,
-  //         });
-  //       })
-  //       .catch((error) => {
-  //         console.log(error.response.data);
-  //       });
-  //   })
-  //   .catch((error) => {
-  //     console.log(error.response.data);
-  //   });
   const token = await getToken();
   const response = await fetch("https://merchant.qpay.mn/v2/invoice", {
     method: "POST",
@@ -364,70 +320,95 @@ export const invoiceTime = asyncHandler(async (req, res, next) => {
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Book ${profile.phone}`,
       amount: 29000,
-      callback_url: `https://www.boostersback.com/api/v1/users/${wallet._id}/book`,
+      callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/book`,
     }),
   });
   const data = await response.json();
-  wallet.selt({
+  wallet.set({
     qrImage: data.qr_image,
     invoiceId: req.body.invoiceId,
     amout: 29000,
     urls: data.urls,
+    invoiceType: "BOOK",
   });
   wallet.save();
   res.status(200).json(wallet._id);
 });
 
-export const invoiceCheck = asyncHandler(async (req, res) => {
+export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
+  const profile = await User.findById(req.userId);
+  const wallet = await Wallet.create({});
+  const token = await getToken();
+  const response = await fetch("https://merchant.qpay.mn/v2/invoice", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      invoice_code: "BOOSTERS_MN_INVOICE",
+      sender_invoice_no: "12345678",
+      invoice_receiver_code: `${profile.phone}`,
+      invoice_description: `Lesson ${profile.phone}`,
+      amount: 50000,
+      callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/lesson`,
+    }),
+  });
+  const data = await response.json();
+  wallet.set({
+    qrImage: data.qr_image,
+    invoiceId: req.body.invoiceId,
+    amout: 50000,
+    urls: data.urls,
+    invoiceType: "LESSON",
+  });
+  wallet.save();
+  res.status(200).json(wallet._id);
+});
+
+export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
+  const { walletId, userId } = req.params;
+  const user = User.findById(userId);
+  const wallet = Wallet.findById(walletId);
+  user.set({
+    isBoughtBook: true,
+  });
+  wallet.set({
+    isPayed: true,
+  });
+  user.save();
+  wallet.save();
+  res.status(200).json({
+    success: true,
+  });
+});
+export const invoiceByBookLesson = asyncHandler(async (req, res) => {
+  const { walletId, userId } = req.params;
+  const user = User.findById(userId);
+  const wallet = Wallet.findById(walletId);
+  user.set({
+    isPayment: true,
+  });
+  wallet.set({
+    isPayed: true,
+  });
+  user.save();
+  wallet.save();
+  res.status(200).json({
+    success: true,
+  });
+});
+
+export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  // await axios({
-  //   method: "post",
-  //   url: "https://merchant.qpay.mn/v2/auth/token",
-  //   headers: {
-  //     Authorization: `Basic Qk9PU1RFUlNfTU46UzhFZ1ROM2Y=`,
-  //   },
-  // })
-  //   .then((response) => {
-  //     const token = response.data.access_token;
-  //     axios({
-  //       method: "post",
-  //       url: "https://merchant.qpay.mn/v2/payment/check",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       data: {
-  //         object_type: "INVOICE",
-  //         object_id: req.params.id,
-  //         page_number: 1,
-  //         page_limit: 100,
-  //         callback_url: `https://www.boostersback.com/api/v1/users/check/challbacks/${req.params.id}/${req.params.numId}`,
-  //       },
-  //     })
-  //       .then(async (response) => {
-  //         const profile = await User.findById(req.params.numId);
-  //         const count = response.data.count;
-  //         if (count === 0) {
-  //           res.status(401).json({
-  //             success: false,
-  //           });
-  //         } else {
-  //           profile.isPayment = true;
-  //           profile.paymentDate = new Date();
-  //           profile.save();
-  //           res.status(200).json({
-  //             success: true,
-  //             data: profile,
-  //           });
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         // console.log(error, "error");
-  //         console.log("err==================");
-  //       });
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //   });
+  const user = await User.findById(req.userId);
+  const wallet = await Wallet.findBydId({ invoiceId: id });
+  if (!wallet) {
+    throw new MyError("Төлбөр амжилтгүй", 402);
+  }
+  if (!user) {
+    throw new MyError(req.params.id, 401);
+  }
   const token = await getToken();
   const response = await fetch("https://merchant.qpay.mn/v2/payment/check", {
     method: "POST",
@@ -438,71 +419,24 @@ export const invoiceCheck = asyncHandler(async (req, res) => {
     body: JSON.stringify({
       object_type: "INVOICE",
       object_id: id,
-      page: 1,
-      page_limit: 100,
-      callback_url: ``,
+      offset: {
+        page_number: 1,
+        page_limit: 100,
+      },
     }),
   });
-});
-
-export const invoiceBook = asyncHandler(async (req, res, next) => {
-  const profile = await User.findById(req.params.id);
-  await axios({
-    method: "post",
-    url: "https://merchant.qpay.mn/v2/auth/token",
-    headers: {
-      Authorization: `Basic Qk9PU1RFUlNfTU46UzhFZ1ROM2Y=`,
-    },
-  })
-    .then((response) => {
-      const token = response.data.access_token;
-
-      axios({
-        method: "post",
-        url: "https://merchant.qpay.mn/v2/invoice",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        data: {
-          invoice_code: "BOOSTERS_MN_INVOICE",
-          sender_invoice_no: "12345678",
-          invoice_receiver_code: `${profile.phone}`,
-          invoice_description: `Book ${profile.phone}`,
-
-          amount: req.body.amount,
-          callback_url: `https://www.boostersback.com/api/v1/users/callbacks/${req.params.id}/${req.body.amount}`,
-        },
-      })
-        .then(async (response) => {
-          req.body.urls = response.data.urls;
-          req.body.qrImage = response.data.qr_image;
-          req.body.invoiceId = response.data.invoice_id;
-          const wallet = await Wallet.create(req.body);
-          profile.invoiceId = wallet._id;
-          profile.save();
-          res.status(200).json({
-            success: true,
-            data: wallet,
-          });
-        })
-        .catch((error) => {
-          console.log(error.response.data);
-        });
-    })
-    .catch((error) => {
-      console.log(error.response.data);
+  const data = await response.json();
+  const count = data.count;
+  if (count === 0) {
+    res.status(200).json({
+      success: false,
+      message: "Төлбөр төлөгдөөгүй",
     });
-});
-
-export const chargeTime = asyncHandler(async (req, res, next) => {
-  const profile = await User.findById(req.params.id);
-  profile.isPayment = true;
-  profile.paymentDate = new Date();
-  profile.save();
-  res.status(200).json({
-    success: true,
-    data: profile,
-  });
+  } else {
+    user.isPayment = true;
+    user.save();
+    res.status(200).json({ success: true });
+  }
 });
 
 export const updatePassword = asyncHandler(async (req, res, next) => {

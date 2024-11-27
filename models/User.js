@@ -25,6 +25,9 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  expoPushToken: {
+    type: String,
+  },
   role: {
     type: String,
     enum: ["user", "operator", "admin"],
