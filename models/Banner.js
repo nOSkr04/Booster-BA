@@ -9,8 +9,8 @@ const BannerSchema = new mongoose.Schema(
       type: String,
     },
     image: {
-      url: String,
-      blurHash: String,
+      type: mongoose.Schema.ObjectId,
+      ref: "Image",
     },
     isActive: {
       type: Boolean,
