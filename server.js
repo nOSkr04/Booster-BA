@@ -17,12 +17,11 @@ import hpp from "hpp";
 import errorHandler from "./middleware/error.js";
 import connectDB from "./config/db.js";
 import usersRoutes from "./routes/users.js";
+import bannerRoutes from "./routes/banners.js";
 import walletsRoutes from "./routes/wallets.js";
 import mediasRoutes from "./routes/media.js";
 import articlesRoutes from "./routes/articles.js";
 import categoryRoutes from "./routes/categorys.js";
-import voucherRoutes from "./routes/vouchers.js";
-import bannerRoutes from "./routes/banners.js";
 // Аппын тохиргоог process.env рүү ачаалах
 dotenv.config({ path: "./config/config.env" });
 
@@ -103,12 +102,11 @@ app.use(morgan("combined", { stream: accessLogStream }));
 
 // REST API RESOURSE
 app.use("/users", usersRoutes);
+app.use("/banner", bannerRoutes);
 app.use("/wallets", walletsRoutes);
 app.use("/lessons", articlesRoutes);
 app.use("/media", mediasRoutes);
 app.use("/category", categoryRoutes);
-app.use("/voucher", voucherRoutes);
-app.use("/banner", bannerRoutes);
 // Алдаа үүсэхэд барьж авч алдааны мэдээллийг клиент тал руу автоматаар мэдээлнэ
 app.use(errorHandler);
 
