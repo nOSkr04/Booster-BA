@@ -295,7 +295,7 @@ export const getToken = async () => {
   const response = await fetch("https://merchant.qpay.mn/v2/auth/token", {
     method: "POST",
     headers: {
-      Authorization: `Basic Qk9PU1RFUlNfTU46UzhFZ1ROM2Y=`,
+      Authorization: `Basic U0FOVEFfTU46Z3F2SWlKSnI=`,
       "Content-Type": "application/json",
     },
   });
