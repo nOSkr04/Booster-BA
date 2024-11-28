@@ -2,20 +2,11 @@ import mongoose from "mongoose";
 
 const BannerSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-    },
-    description: {
-      type: String,
-    },
     image: {
       type: mongoose.Schema.ObjectId,
       ref: "Image",
     },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
+
     createUser: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
@@ -24,6 +15,7 @@ const BannerSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "User",
     },
+
     createdAt: {
       type: Date,
       default: Date.now,

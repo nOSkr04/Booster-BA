@@ -17,9 +17,9 @@ import hpp from "hpp";
 import errorHandler from "./middleware/error.js";
 import connectDB from "./config/db.js";
 import usersRoutes from "./routes/users.js";
-import bannerRoutes from "./routes/banners.js";
 import walletsRoutes from "./routes/wallets.js";
 import mediasRoutes from "./routes/media.js";
+import bannerRoutes from "./routes/banners.js";
 import articlesRoutes from "./routes/articles.js";
 import categoryRoutes from "./routes/categorys.js";
 // Аппын тохиргоог process.env рүү ачаалах
@@ -102,9 +102,9 @@ app.use(morgan("combined", { stream: accessLogStream }));
 
 // REST API RESOURSE
 app.use("/users", usersRoutes);
-app.use("/banner", bannerRoutes);
 app.use("/wallets", walletsRoutes);
 app.use("/lessons", articlesRoutes);
+app.use("/banners", bannerRoutes);
 app.use("/media", mediasRoutes);
 app.use("/category", categoryRoutes);
 // Алдаа үүсэхэд барьж авч алдааны мэдээллийг клиент тал руу автоматаар мэдээлнэ

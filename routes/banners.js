@@ -7,14 +7,14 @@ import {
   createBanner,
   deleteBanner,
   updateBanner,
-} from "../controller/banner.js";
+} from "../controller/banners.js";
 
 const router = Router();
 
-//"/api/v1/banners"
+// /banners"
 router
   .route("/")
-  .get(getBanners)
+  .get(protect, getBanners)
   .post(protect, authorize("admin", "operator"), createBanner);
 
 router
