@@ -314,11 +314,11 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      invoice_code: "BOOSTERS_MN_INVOICE",
+      invoice_code: "SANTA_MN_INVOICE",
       sender_invoice_no: "12345678",
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Book ${profile.phone}`,
-      amount: 29000,
+      amount: 100,
       callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/book`,
     }),
   });
@@ -326,7 +326,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
   wallet.set({
     qrImage: data.qr_image,
     invoiceId: data.invoice_id,
-    amout: 29000,
+    amout: 100,
     urls: data.urls,
     invoiceType: "BOOK",
   });
@@ -345,11 +345,11 @@ export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      invoice_code: "BOOSTERS_MN_INVOICE",
+      invoice_code: "SANTA_MN_INVOICE",
       sender_invoice_no: "12345678",
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Lesson ${profile.phone}`,
-      amount: 50000,
+      amount: 100,
       callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/lesson`,
     }),
   });
@@ -357,7 +357,7 @@ export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
   wallet.set({
     qrImage: data.qr_image,
     invoiceId: data.invoice_id,
-    amout: 50000,
+    amout: 100,
     urls: data.urls,
     invoiceType: "LESSON",
   });
