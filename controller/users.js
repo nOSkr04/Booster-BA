@@ -325,7 +325,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
   const data = await response.json();
   wallet.set({
     qrImage: data.qr_image,
-    invoiceId: req.body.invoiceId,
+    invoiceId: req.body.invoice_id,
     amout: 29000,
     urls: data.urls,
     invoiceType: "BOOK",
@@ -356,7 +356,7 @@ export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
   const data = await response.json();
   wallet.set({
     qrImage: data.qr_image,
-    invoiceId: req.body.invoiceId,
+    invoiceId: req.body.invoice_id,
     amout: 50000,
     urls: data.urls,
     invoiceType: "LESSON",
