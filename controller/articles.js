@@ -53,10 +53,7 @@ export const getArticle = asyncHandler(async (req, res, next) => {
 
 export const getCategoryArticles = asyncHandler(async (req, res, next) => {
   //req.query, select
-  const articles = await Article.find(
-    { category: req.params.categoryId },
-    select
-  );
+  const articles = await Article.find({ category: req.params.categoryId });
   res.status(200).json({
     success: true,
     count: articles.length,
