@@ -41,6 +41,10 @@ router.route("/me").get(protect, authMeUser);
 router.route("/create-invoice-by-book").post(createInvoiceByBook);
 router.route("/create-invoice-by-lesson").post(createInvoiceByLesson);
 router.route("/invoice-check/:id").get(invoiceByQpayCheck);
-router.route("/:id").get(getUser).put(updateUser).delete(protect, deleteUser);
+router
+  .route("/:id/:type")
+  .get(getUser)
+  .put(updateUser)
+  .delete(protect, deleteUser);
 
 export default router;

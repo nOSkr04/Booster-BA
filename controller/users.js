@@ -399,7 +399,8 @@ export const invoiceByBookLesson = asyncHandler(async (req, res) => {
 });
 
 export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { id, type } = req.params;
+  console.log(id, type);
   const user = await User.findById(req.userId);
   const wallet = await Wallet.findOne({ invoiceId: id });
   if (!wallet) {
@@ -432,9 +433,15 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       message: "Төлбөр төлөгдөөгүй",
     });
   } else {
-    user.isPayment = true;
-    user.save();
-    res.status(200).json({ success: true });
+    if (type === "lesson") {
+      user.isPayment = true;
+      user.save();
+      res.status(200).json({ success: true });
+    } else {
+      user.isBoughtBook = true;
+      user.save();
+      res.status(200).json({ success: true });
+    }
   }
 });
 
