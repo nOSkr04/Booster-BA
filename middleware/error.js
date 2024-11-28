@@ -24,7 +24,7 @@ const errorHandler = (err, req, res, next) => {
 
   if (error.code === 11000) {
     console.log(error);
-    error.message = "Энэ талбарын утгыг давхардуулж өгч болохгүй!";
+    error.message = "Утасны дугаар бүртгэлтэй байна!";
     error.statusCode = 400;
   }
 
