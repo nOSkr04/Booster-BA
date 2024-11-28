@@ -56,9 +56,12 @@ export const getCategoryArticles = asyncHandler(async (req, res, next) => {
   const sort = req.query.sort;
   const select = req.query.select;
 
-  [("select", "sort", "page", "limit")].forEach((el) => delete req.query[el]);
+  console
+    .log(req.params, "REACT@!@#")
 
-  const pagination = await paginate(page, limit, Article);
+    [("select", "sort", "page", "limit")].forEach((el) => delete req.query[el]);
+
+  const pagination = await paginate(page, Article);
 
   //req.query, select
   const articles = await Article.find(
