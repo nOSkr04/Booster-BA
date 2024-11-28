@@ -58,7 +58,7 @@ export const getCategoryArticles = asyncHandler(async (req, res, next) => {
   const select = req.query.select;
 
   console
-    .log(req.params)
+    .log(req.params, "REACT@!@#")
 
     [("select", "sort", "page", "limit")].forEach((el) => delete req.query[el]);
 
