@@ -7,7 +7,7 @@ import {
   createBanner,
   deleteBanner,
   updateBanner,
-} from "../controller/banners.js";
+} from "../controller/banner.js";
 
 const router = Router();
 
