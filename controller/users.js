@@ -323,7 +323,6 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
     }),
   });
   const data = await response.json();
-  console.log(data, "DATa");
   wallet.set({
     qrImage: data.qr_image,
     invoiceId: data.invoice_id,
@@ -402,7 +401,7 @@ export const invoiceByBookLesson = asyncHandler(async (req, res) => {
 export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(req.userId);
-  const wallet = await Wallet.findBydId({ invoiceId: id });
+  const wallet = await Wallet.findOne({ invoiceId: id });
   if (!wallet) {
     throw new MyError("Төлбөр амжилтгүй", 402);
   }
