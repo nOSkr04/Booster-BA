@@ -52,30 +52,15 @@ export const getArticle = asyncHandler(async (req, res, next) => {
 });
 
 export const getCategoryArticles = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  const sort = req.query.sort;
-  const select = req.query.select;
-
-  console
-    .log(req.params, "REACT@!@#")
-
-    [("select", "sort", "page")].forEach((el) => delete req.query[el]);
-
-  const pagination = await paginate(page, Article);
-
   //req.query, select
   const articles = await Article.find(
-    { ...req.query, category: req.params.categoryId },
+    { category: req.params.categoryId },
     select
-  )
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
+  );
   res.status(200).json({
     success: true,
     count: articles.length,
     data: articles,
-    pagination,
   });
 });
 
