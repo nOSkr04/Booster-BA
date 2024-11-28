@@ -53,14 +53,10 @@ export const getArticle = asyncHandler(async (req, res, next) => {
 
 export const getCategoryArticles = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort;
   const select = req.query.select;
 
-  console
-    .log(req.params, "REACT@!@#")
-
-    [("select", "sort", "page", "limit")].forEach((el) => delete req.query[el]);
+  [("select", "sort", "page", "limit")].forEach((el) => delete req.query[el]);
 
   const pagination = await paginate(page, limit, Article);
 
