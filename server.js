@@ -100,7 +100,7 @@ var accessLogStream = rfs.createStream("access.log", {
 });
 app.use(morgan("combined", { stream: accessLogStream }));
 
-// REST API RESOURSE
+// REST API RESOURSE2
 app.use("/users", usersRoutes);
 app.use("/wallets", walletsRoutes);
 app.use("/lessons", articlesRoutes);
