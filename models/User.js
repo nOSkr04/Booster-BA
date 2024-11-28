@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
   },
   bookBoughtCount: {
     default: 0,
-    type: Boolean,
+    type: Number,
   },
   expoPushToken: {
     type: String,
