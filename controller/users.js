@@ -323,6 +323,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
     }),
   });
   const data = await response.json();
+  console.log(data, "DATa");
   wallet.set({
     qrImage: data.qr_image,
     invoiceId: data.invoice_id,
