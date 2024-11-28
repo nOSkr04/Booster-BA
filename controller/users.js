@@ -371,6 +371,7 @@ export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
   const wallet = Wallet.findById(walletId);
   user.set({
     isBoughtBook: true,
+    bookBoughtCount: user.bookBoughtCount + 1,
   });
   wallet.set({
     isPayed: true,
@@ -439,6 +440,7 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       res.status(200).json({ success: true });
     } else {
       user.isBoughtBook = true;
+      user.bookBoughtCount = user.bookBoughtCount + 1;
       user.save();
       res.status(200).json({ success: true });
     }
