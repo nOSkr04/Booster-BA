@@ -14,7 +14,7 @@ const router = Router();
 // /banners"
 router
   .route("/")
-  .get(protect, getBanners)
+  .get(getBanners)
   .post(protect, authorize("admin", "operator"), createBanner);
 
 router
