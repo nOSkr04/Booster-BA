@@ -112,7 +112,10 @@ export const uploadPhotoByCloud = asyncHandler(async (req, res) => {
   const blurHash = await setBlurHash(file.data);
   file.name = `banner_${Date.now()}${path.parse(file.name).ext}`;
   file.mv(`./public/banner/${file.name}`, async (err) => {
-    throw new MyError("Problem with file upload", 500);
+    console.log(err);
+    if (err) {
+      throw new MyError("Problem with file upload?", 500);
+    }
   });
   const fileUrl = `https://server.boosters.mn/banner/${file.name}`;
   const image = await Image.create({

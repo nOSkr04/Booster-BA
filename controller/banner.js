@@ -18,8 +18,8 @@ export const getBanners = asyncHandler(async (req, res, next) => {
   const articles = await Banner.find(req.query, select)
     .sort(sort)
     .skip(pagination.start - 1)
-    .limit(limit);
-
+    .limit(limit)
+    .populate("image");
   res.status(200).json({
     success: true,
     count: articles.length,
@@ -45,19 +45,11 @@ export const getBanner = asyncHandler(async (req, res, next) => {
 });
 
 export const createBanner = asyncHandler(async (req, res, next) => {
-  const category = await Category.findById(req.body.category);
-
-  if (!category) {
-    throw new MyError(req.body.category + " ID-тэй категори байхгүй!", 400);
-  }
-
-  category.save();
   const article = await Banner.create(req.body);
 
   res.status(200).json({
     success: true,
     data: article,
-    category: category,
   });
 });
 
@@ -66,13 +58,6 @@ export const deleteBanner = asyncHandler(async (req, res, next) => {
 
   if (!article) {
     throw new MyError(req.params.id + " ID-тэй ном байхгүй байна.", 404);
-  }
-
-  if (
-    article.createUser.toString() !== req.userId &&
-    req.userRole !== "admin"
-  ) {
-    throw new MyError("Та зөвхөн өөрийнхөө номыг л засварлах эрхтэй", 403);
   }
 
   const user = await User.findById(req.userId);
