@@ -14,7 +14,7 @@ const router = Router();
 //"/api/v1/categorys"
 router
   .route("/")
-  .get(protect, getCategorys)
+  .get(getCategorys)
   .post(protect, authorize("admin", "operator"), createCategory);
 
 router

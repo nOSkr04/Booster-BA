@@ -463,3 +463,7 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
     data: user,
   });
 });
+
+export const sendMail = asyncHandler(async (req, res) => {
+  const { title, description } = req.body;
+});
