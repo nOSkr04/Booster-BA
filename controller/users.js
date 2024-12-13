@@ -318,7 +318,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
       sender_invoice_no: "12345678",
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Book ${profile.phone}`,
-      amount: 100,
+      amount: 29000,
       callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/book`,
     }),
   });
@@ -349,7 +349,7 @@ export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
       sender_invoice_no: "12345678",
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Lesson ${profile.phone}`,
-      amount: 100,
+      amount: 50000,
       callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/lesson`,
     }),
   });
