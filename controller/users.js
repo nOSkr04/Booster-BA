@@ -295,7 +295,7 @@ export const getToken = async () => {
   const response = await fetch("https://merchant.qpay.mn/v2/auth/token", {
     method: "POST",
     headers: {
-      Authorization: `Basic U0FOVEFfTU46Z3F2SWlKSnI=`,
+      Authorization: `Basic Qk9PU1RFUlNfTU46UzhFZ1ROM2Y`,
       "Content-Type": "application/json",
     },
   });
@@ -401,7 +401,6 @@ export const invoiceByBookLesson = asyncHandler(async (req, res) => {
 
 export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
   const { id, type } = req.params;
-  console.log(id, type);
   const user = await User.findById(req.userId);
   const wallet = await Wallet.findOne({ invoiceId: id });
   if (!wallet) {
