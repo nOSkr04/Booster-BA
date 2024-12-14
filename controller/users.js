@@ -314,7 +314,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      invoice_code: "SANTA_MN_INVOICE",
+      invoice_code: "BOOSTERS_MN_INVOICE",
       sender_invoice_no: "12345678",
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Book ${profile.phone}`,
@@ -345,7 +345,7 @@ export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      invoice_code: "SANTA_MN_INVOICE",
+      invoice_code: "BOOSTERS_MN_INVOICE",
       sender_invoice_no: "12345678",
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Lesson ${profile.phone}`,
