@@ -6,6 +6,27 @@ import paginate from "../utils/paginate.js";
 import User from "../models/User.js";
 import Category from "../models/Category.js";
 // api/v1/articles
+export const getAllBanners = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  [("select", "sort", "page", "limit")].forEach((el) => delete req.query[el]);
+  const pagination = await paginate(page, limit, Banner);
+
+  const articles = await Banner.find(req.query, select)
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit)
+    .populate("image");
+  res.status(200).json({
+    success: true,
+    count: articles.length,
+    data: articles,
+    pagination,
+  });
+});
 export const getBanners = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
