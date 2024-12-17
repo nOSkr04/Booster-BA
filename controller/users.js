@@ -38,20 +38,20 @@ export const login = asyncHandler(async (req, res, next) => {
   // Оролтыгоо шалгана
 
   if (!phone || !password) {
-    throw new MyError("Имэл болон нууц үйгээ дамжуулна уу", 400);
+    throw new MyError("Утас болон нууц үгээ дамжуулна уу", 400);
   }
 
   // Тухайн хэрэглэгчийн хайна
   const user = await User.findOne({ phone }).select("+password");
 
   if (!user) {
-    throw new MyError("Имэйл болон нууц үгээ зөв оруулна уу", 401);
+    throw new MyError(phone + "дугаартай хэрэглэгч олдсонгүй", 401);
   }
 
   const ok = await user.checkPassword(password);
 
   if (!ok) {
-    throw new MyError("Имэйл болон нууц үгээ зөв оруулна уу", 401);
+    throw new MyError("Нууц үгээ зөв оруулна уу", 401);
   }
 
   const token = user.getJsonWebToken();
