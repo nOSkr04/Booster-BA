@@ -6,7 +6,11 @@ const BannerSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "Image",
     },
-
+    type: {
+      type: String,
+      default: "web",
+      enum: ["web", "mobile"],
+    },
     createUser: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
