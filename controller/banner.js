@@ -14,8 +14,31 @@ export const getBanners = asyncHandler(async (req, res, next) => {
 
   [("select", "sort", "page", "limit")].forEach((el) => delete req.query[el]);
   const pagination = await paginate(page, limit, Banner);
+  const filter = { ...req.query, type: "web" };
 
-  const articles = await Banner.find(req.query, select)
+  const articles = await Banner.find(filter, select)
+    .sort(sort)
+    .skip(pagination.start - 1)
+    .limit(limit)
+    .populate("image");
+  res.status(200).json({
+    success: true,
+    count: articles.length,
+    data: articles,
+    pagination,
+  });
+});
+export const getMobileBanners = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const sort = req.query.sort;
+  const select = req.query.select;
+
+  [("select", "sort", "page", "limit")].forEach((el) => delete req.query[el]);
+  const pagination = await paginate(page, limit, Banner);
+  const filter = { ...req.query, type: "mobile" };
+
+  const articles = await Banner.find(filter, select)
     .sort(sort)
     .skip(pagination.start - 1)
     .limit(limit)
