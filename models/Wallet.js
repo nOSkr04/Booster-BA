@@ -30,6 +30,10 @@ const WalletSchema = new mongoose.Schema(
         link: String,
       },
     ],
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
