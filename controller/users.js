@@ -306,7 +306,7 @@ export const getToken = async () => {
 export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
   const profile = await User.findById(req.userId);
   const quantity = req.body.quantity ? req.body.quantity : 1;
-  console.log(quantity);
+  console.log("price =", quantity * 29000, "quantity =", quantity);
   const wallet = await Wallet.create({});
   const token = await getToken();
   const response = await fetch("https://merchant.qpay.mn/v2/invoice", {
