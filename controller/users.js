@@ -306,7 +306,8 @@ export const getToken = async () => {
 export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
   const profile = await User.findById(req.userId);
   const quantity = req.body.quantity ? req.body.quantity : 1;
-  console.log("price =", quantity * 29000, "quantity =", quantity);
+  const totalPrice = quantity * 29000;
+  console.log("price =", totalPrice, "quantity =", quantity);
   const wallet = await Wallet.create({});
   const token = await getToken();
   const response = await fetch("https://merchant.qpay.mn/v2/invoice", {
@@ -320,7 +321,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
       sender_invoice_no: "12345678",
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Book ${profile.phone}`,
-      amount: 29000 * quantity,
+      amount: totalPrice,
       callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/book`,
     }),
   });
@@ -328,7 +329,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
   wallet.set({
     qrImage: data.qr_image,
     invoiceId: data.invoice_id,
-    amout: 29000 * quantity,
+    amount: totalPrice,
     urls: data.urls,
     invoiceType: "BOOK",
   });
@@ -359,7 +360,7 @@ export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
   wallet.set({
     qrImage: data.qr_image,
     invoiceId: data.invoice_id,
-    amout: 50000,
+    amount: 50000,
     urls: data.urls,
     invoiceType: "LESSON",
   });
