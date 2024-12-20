@@ -305,6 +305,7 @@ export const getToken = async () => {
 
 export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
   const profile = await User.findById(req.userId);
+  const quantity = req.body.quantity ? req.body.quantity : 1;
   const wallet = await Wallet.create({});
   const token = await getToken();
   const response = await fetch("https://merchant.qpay.mn/v2/invoice", {
@@ -318,7 +319,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
       sender_invoice_no: "12345678",
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Book ${profile.phone}`,
-      amount: 29000,
+      amount: 29000 * quantity,
       callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/book`,
     }),
   });
@@ -326,7 +327,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
   wallet.set({
     qrImage: data.qr_image,
     invoiceId: data.invoice_id,
-    amout: 100,
+    amout: 29000 * quantity,
     urls: data.urls,
     invoiceType: "BOOK",
   });
@@ -357,7 +358,7 @@ export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
   wallet.set({
     qrImage: data.qr_image,
     invoiceId: data.invoice_id,
-    amout: 100,
+    amout: 50000,
     urls: data.urls,
     invoiceType: "LESSON",
   });
@@ -372,6 +373,13 @@ export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
   user.set({
     isBoughtBook: true,
     bookBoughtCount: user.bookBoughtCount + 1,
+    bookPaymentDate: [
+      ...user.bookPaymentDate,
+      {
+        date: new Date(),
+        amount: wallet.amount,
+      },
+    ],
   });
   wallet.set({
     isPayed: true,
@@ -435,11 +443,21 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
   } else {
     if (type === "lesson") {
       user.isPayment = true;
+      wallet.isPayed = true;
       user.save();
       res.status(200).json({ success: true });
     } else {
+      const bookPayment = [
+        ...user.bookPaymentDate,
+        {
+          date: new Date(),
+          amount: wallet.amount,
+        },
+      ];
+      wallet.isPayed = true;
       user.isBoughtBook = true;
       user.bookBoughtCount = user.bookBoughtCount + 1;
+      user.bookPaymentDate = bookPayment;
       user.save();
       res.status(200).json({ success: true });
     }

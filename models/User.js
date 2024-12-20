@@ -53,6 +53,12 @@ const UserSchema = new mongoose.Schema({
   paymentDate: {
     type: Date,
   },
+  bookPaymentDate: [
+    {
+      createdAt: Date,
+      price: Number,
+    },
+  ],
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {

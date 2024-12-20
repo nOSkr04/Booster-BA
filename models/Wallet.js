@@ -9,6 +9,9 @@ const WalletSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    amount: {
+      type: Number,
+    },
     isPayed: {
       type: Boolean,
       default: false,
