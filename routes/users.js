@@ -18,6 +18,7 @@ import {
   invoiceByBookLesson,
   createInvoiceByLesson,
   invoiceByQpayCheck,
+  updateProfile,
 } from "../controller/users.js";
 
 const router = Router();
@@ -38,6 +39,7 @@ router
   .get(authorize("admin"), getUsers)
   .post(authorize("admin"), createUser);
 router.route("/me").get(protect, authMeUser);
+router.route("/update-profile", updateProfile);
 router.route("/create-invoice-by-book").post(createInvoiceByBook);
 router.route("/create-invoice-by-lesson").post(createInvoiceByLesson);
 router.route("/invoice-check/:id/:type").get(invoiceByQpayCheck);
