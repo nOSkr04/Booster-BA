@@ -276,6 +276,22 @@ export const updateUser = asyncHandler(async (req, res, next) => {
   });
 });
 
+export const updateProfile = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.userId, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!user) {
+    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
+
 export const deleteUser = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
