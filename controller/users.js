@@ -6,7 +6,6 @@ import axios from "axios";
 import Wallet from "../models/Wallet.js";
 import { format, startOfDay } from "date-fns";
 import bcrypt from "bcrypt";
-
 export const authMeUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.userId);
   if (!user) {
@@ -15,6 +14,96 @@ export const authMeUser = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     data: user,
+  });
+});
+
+export const forgotPassword = asyncHandler(async (req, res) => {
+  if (!req.body.phone) {
+    throw new MyError("Та нууц үг сэргээх утас дамжуулна уу", 400);
+  }
+
+  const user = await User.findOne({ phone: req.body.phone });
+
+  if (!user) {
+    throw new MyError(req.body.phone + " утастай хэрэглэгч олдсонгүй!", 400);
+  }
+  if (user.forgotPasswordPhoneDate == undefined) {
+    const resetToken = user.generatePasswordChangeToken();
+    await user.save();
+
+    const link = `${resetToken}`;
+
+    const message = `Нууц үг өөрчлөх код: ${link} Наймаа ХХК`;
+    const param = encodeURI(message);
+
+    await axios({
+      method: "get",
+      url: `https://api.messagepro.mn/send?key=63053350aa1c4d36e94d0756f4ec160e&from=72773055&to=${req.body.phone}&text=${param}`,
+    });
+
+    user.forgotPasswordPhoneDate = Date.now();
+    user.save();
+
+    res.status(200).json({
+      success: true,
+    });
+  } else {
+    if (user.forgotPasswordPhoneDate.getTime() + 60 * 1000 > Date.now()) {
+      throw new MyError(
+        "1 минутын дараа нууц үг солих мсж илгээх боломжтой",
+        400
+      );
+    }
+
+    const resetToken = user.generatePasswordChangeToken();
+    await user.save();
+
+    const link = `${resetToken}`;
+
+    const message = `Нууц үг өөрчлөх код: ${link} Наймаа ХХК`;
+    const param = encodeURI(message);
+
+    await axios({
+      method: "get",
+      url: `https://api.messagepro.mn/send?key=63053350aa1c4d36e94d0756f4ec160e&from=72773055&to=${req.body.phone}&text=${param}`,
+    });
+
+    user.forgotPasswordPhoneDate = Date.now();
+    user.save();
+
+    res.status(200).json({
+      success: true,
+    });
+  }
+});
+
+export const forgotChangePassword = asyncHandler(async (req, res) => {
+  if (!req.body.resetToken || !req.body.password) {
+    throw new MyError("Та токен болон нууц үгээ дамжуулна уу", 400);
+  }
+
+  const encrypted = req.body.resetToken;
+
+  const user = await User.findOne({
+    resetPasswordToken: encrypted,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new MyError("Токен хүчингүй байна!", 400);
+  }
+
+  user.password = req.body.password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+
+  const token = user.getJsonWebToken();
+
+  res.status(200).json({
+    success: true,
+    token,
+    user: user,
   });
 });
 

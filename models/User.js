@@ -61,6 +61,9 @@ const UserSchema = new mongoose.Schema({
       price: Number,
     },
   ],
+  forgotPasswordPhoneDate: {
+    type: Date,
+  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {

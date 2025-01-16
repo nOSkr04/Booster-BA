@@ -21,6 +21,8 @@ import {
   updateProfile,
   createInvoiceByPackage,
   invoiceByBookPackage,
+  forgotPassword,
+  forgotChangePassword,
 } from "../controller/users.js";
 
 const router = Router();
@@ -34,6 +36,8 @@ router.route("/update-password/:id").post(updatePassword);
 router.route("/callback/:walletId/:userId/book").get(invoiceByBookConfirmed);
 router.route("/callback/:walletId/:userId/lesson").get(invoiceByBookLesson);
 router.route("/callback/:walletId/:userId/package").get(invoiceByBookPackage);
+router.route("/forgot-passowrd").post(forgotPassword);
+router.route("/change-password").post(forgotChangePassword);
 router.use(protect);
 
 //"/api/v1/users"
