@@ -30,14 +30,15 @@ const router = Router();
 //"/api/v1/users"
 router.route("/register").post(register);
 router.route("/login").post(login);
+router.route("/forgot-passowrd").post(forgotPassword);
+router.route("/change-password").post(forgotChangePassword);
 router.route("/logout").get(logout);
 router.route("/dashboard").get(dashboard);
 router.route("/update-password/:id").post(updatePassword);
 router.route("/callback/:walletId/:userId/book").get(invoiceByBookConfirmed);
 router.route("/callback/:walletId/:userId/lesson").get(invoiceByBookLesson);
 router.route("/callback/:walletId/:userId/package").get(invoiceByBookPackage);
-router.route("/forgot-passowrd").post(forgotPassword);
-router.route("/change-password").post(forgotChangePassword);
+
 router.use(protect);
 
 //"/api/v1/users"
