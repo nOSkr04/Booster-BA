@@ -383,6 +383,7 @@ export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
   wallet.save();
   res.status(200).json(wallet._id);
 });
+
 export const createInvoiceByPackage = asyncHandler(async (req, res, next) => {
   const profile = await User.findById(req.userId);
   const wallet = await Wallet.create({});
@@ -409,6 +410,7 @@ export const createInvoiceByPackage = asyncHandler(async (req, res, next) => {
     amount: 69000,
     urls: data.urls,
     invoiceType: "PACKAGE",
+    bookQuantity: 1,
   });
   wallet.save();
   res.status(200).json(wallet._id);
