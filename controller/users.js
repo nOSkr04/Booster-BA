@@ -18,10 +18,10 @@ export const authMeUser = asyncHandler(async (req, res) => {
 });
 
 export const forgotPassword = asyncHandler(async (req, res) => {
+  console.log(req.body);
   if (!req.body.phone) {
     throw new MyError("Та нууц үг сэргээх утас дамжуулна уу", 400);
   }
-  console.log(req.body);
 
   const user = await User.findOne({ phone: req.body.phone });
   console.log(user, "USER");
