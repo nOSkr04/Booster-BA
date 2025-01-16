@@ -28,10 +28,10 @@ import {
 const router = Router();
 
 //"/api/v1/users"
-router.route("/register").post(register);
-router.route("/login").post(login);
 router.route("/forgot-passowrd").post(forgotPassword);
 router.route("/change-password").post(forgotChangePassword);
+router.route("/register").post(register);
+router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/dashboard").get(dashboard);
 router.route("/update-password/:id").post(updatePassword);

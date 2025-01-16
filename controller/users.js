@@ -21,9 +21,10 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   if (!req.body.phone) {
     throw new MyError("Та нууц үг сэргээх утас дамжуулна уу", 400);
   }
+  console.log(req.body);
 
   const user = await User.findOne({ phone: req.body.phone });
-
+  console.log(user, "USER");
   if (!user) {
     throw new MyError(req.body.phone + " утастай хэрэглэгч олдсонгүй!", 400);
   }
