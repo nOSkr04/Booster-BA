@@ -399,7 +399,7 @@ export const createInvoiceByPackage = asyncHandler(async (req, res, next) => {
       sender_invoice_no: "12345678",
       invoice_receiver_code: `${profile.phone}`,
       invoice_description: `Package ${profile.phone}`,
-      amount: 50000,
+      amount: 69000,
       callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/package`,
     }),
   });
