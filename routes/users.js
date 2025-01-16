@@ -19,6 +19,8 @@ import {
   createInvoiceByLesson,
   invoiceByQpayCheck,
   updateProfile,
+  createInvoiceByPackage,
+  invoiceByBookPackage,
 } from "../controller/users.js";
 
 const router = Router();
@@ -31,6 +33,7 @@ router.route("/dashboard").get(dashboard);
 router.route("/update-password/:id").post(updatePassword);
 router.route("/callback/:walletId/:userId/book").get(invoiceByBookConfirmed);
 router.route("/callback/:walletId/:userId/lesson").get(invoiceByBookLesson);
+router.route("/callback/:walletId/:userId/package").get(invoiceByBookPackage);
 router.use(protect);
 
 //"/api/v1/users"
@@ -41,6 +44,7 @@ router
 router.route("/me").get(protect, authMeUser);
 router.route("/update-profile").put(updateProfile);
 router.route("/create-invoice-by-book").post(createInvoiceByBook);
+router.route("/create-invoice-by-package").post(createInvoiceByPackage);
 router.route("/create-invoice-by-lesson").post(createInvoiceByLesson);
 router.route("/invoice-check/:id/:type").get(invoiceByQpayCheck);
 router.route("/:id").get(getUser).put(updateUser).delete(protect, deleteUser);

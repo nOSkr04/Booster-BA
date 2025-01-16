@@ -22,6 +22,7 @@ const WalletSchema = new mongoose.Schema(
       default: null,
     },
     invoiceType: String,
+    bookQuantity: Number,
     urls: [
       {
         name: String,

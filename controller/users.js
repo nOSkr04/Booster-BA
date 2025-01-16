@@ -323,7 +323,6 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
   const profile = await User.findById(req.userId);
   const quantity = req.body.quantity ? req.body.quantity : 1;
   const totalPrice = quantity * 29000;
-  console.log("price =", totalPrice, "quantity =", quantity);
   const wallet = await Wallet.create({});
   const token = await getToken();
   const response = await fetch("https://merchant.qpay.mn/v2/invoice", {
@@ -348,6 +347,7 @@ export const createInvoiceByBook = asyncHandler(async (req, res, next) => {
     amount: totalPrice,
     urls: data.urls,
     invoiceType: "BOOK",
+    bookQuantity: quantity,
   });
   wallet.save();
   res.status(200).json(wallet._id);
@@ -383,6 +383,36 @@ export const createInvoiceByLesson = asyncHandler(async (req, res, next) => {
   wallet.save();
   res.status(200).json(wallet._id);
 });
+export const createInvoiceByPackage = asyncHandler(async (req, res, next) => {
+  const profile = await User.findById(req.userId);
+  const wallet = await Wallet.create({});
+  const token = await getToken();
+  const response = await fetch("https://merchant.qpay.mn/v2/invoice", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      invoice_code: "BOOSTERS_MN_INVOICE",
+      sender_invoice_no: "12345678",
+      invoice_receiver_code: `${profile.phone}`,
+      invoice_description: `Package ${profile.phone}`,
+      amount: 50000,
+      callback_url: `https://www.server.boosters.mn/api/v1/users/callback/${wallet._id}/${profile._id}/package`,
+    }),
+  });
+  const data = await response.json();
+  wallet.set({
+    qrImage: data.qr_image,
+    invoiceId: data.invoice_id,
+    amount: 69000,
+    urls: data.urls,
+    invoiceType: "PACKAGE",
+  });
+  wallet.save();
+  res.status(200).json(wallet._id);
+});
 
 export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
   const { walletId, userId } = req.params;
@@ -390,7 +420,7 @@ export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
   const wallet = Wallet.findById(walletId);
   user.set({
     isBoughtBook: true,
-    bookBoughtCount: user.bookBoughtCount + 1,
+    bookBoughtCount: user.bookBoughtCount + wallet.bookQuantity,
     bookPaymentDate: [
       ...user.bookPaymentDate,
       {
@@ -408,12 +438,38 @@ export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
     success: true,
   });
 });
+
 export const invoiceByBookLesson = asyncHandler(async (req, res) => {
   const { walletId, userId } = req.params;
   const user = User.findById(userId);
   const wallet = Wallet.findById(walletId);
   user.set({
     isPayment: true,
+  });
+  wallet.set({
+    isPayed: true,
+  });
+  user.save();
+  wallet.save();
+  res.status(200).json({
+    success: true,
+  });
+});
+export const invoiceByBookPackage = asyncHandler(async (req, res) => {
+  const { walletId, userId } = req.params;
+  const user = User.findById(userId);
+  const wallet = Wallet.findById(walletId);
+  user.set({
+    isPayment: true,
+    isBoughtBook: true,
+    bookBoughtCount: user.bookBoughtCount + 1,
+    bookPaymentDate: [
+      ...user.bookPaymentDate,
+      {
+        date: new Date(),
+        amount: wallet.amount,
+      },
+    ],
   });
   wallet.set({
     isPayed: true,
@@ -463,6 +519,23 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       user.isPayment = true;
       wallet.isPayed = true;
       user.save();
+      wallet.save();
+      res.status(200).json({ success: true });
+    } else if (type === "package") {
+      user.isPayment = true;
+      const bookPayment = [
+        ...user.bookPaymentDate,
+        {
+          date: new Date(),
+          amount: wallet.amount,
+        },
+      ];
+      wallet.isPayed = true;
+      user.isBoughtBook = true;
+      user.bookBoughtCount = user.bookBoughtCount + 1;
+      user.bookPaymentDate = bookPayment;
+      user.save();
+      wallet.save();
       res.status(200).json({ success: true });
     } else {
       const bookPayment = [
@@ -477,6 +550,7 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       user.bookBoughtCount = user.bookBoughtCount + 1;
       user.bookPaymentDate = bookPayment;
       user.save();
+      wallet.save();
       res.status(200).json({ success: true });
     }
   }
