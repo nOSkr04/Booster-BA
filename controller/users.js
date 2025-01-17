@@ -32,7 +32,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
     const link = `${resetToken}`;
 
-    const message = `Нууц үг өөрчлөх код: ${link} Наймаа ХХК`;
+    const message = `Нууц үг өөрчлөх код: ${link}`;
     const param = encodeURI(message);
 
     await axios({
