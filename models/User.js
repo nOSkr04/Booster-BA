@@ -110,4 +110,14 @@ UserSchema.methods.generatePasswordChangeToken = function () {
   return resetToken;
 };
 
+UserSchema.methods.generatePasswordChangeToken = function () {
+  const resetToken = Math.floor(1000 + Math.random() * 9000);
+
+  this.resetPasswordToken = resetToken;
+
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
+};
+
 export default mongoose.model("User", UserSchema);

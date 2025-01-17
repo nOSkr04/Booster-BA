@@ -18,14 +18,11 @@ export const authMeUser = asyncHandler(async (req, res) => {
 });
 
 export const forgotPassword = asyncHandler(async (req, res) => {
-  console.log("object", ">>>");
-  console.log(req.body);
   if (!req.body.phone) {
     throw new MyError("Та нууц үг сэргээх утас дамжуулна уу", 400);
   }
 
   const user = await User.findOne({ phone: req.body.phone });
-  console.log(user, "USER");
   if (!user) {
     throw new MyError(req.body.phone + " утастай хэрэглэгч олдсонгүй!", 400);
   }
@@ -62,7 +59,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
     const link = `${resetToken}`;
 
-    const message = `Нууц үг өөрчлөх код: ${link} Наймаа ХХК`;
+    const message = `Нууц үг өөрчлөх код: ${link}`;
     const param = encodeURI(message);
 
     await axios({
