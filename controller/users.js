@@ -133,7 +133,7 @@ export const login = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ phone }).select("+password");
 
   if (!user) {
-    throw new MyError(phone + "дугаартай хэрэглэгч олдсонгүй", 401);
+    throw new MyError(phone + " дугаартай хэрэглэгч олдсонгүй", 401);
   }
 
   const ok = await user.checkPassword(password);
