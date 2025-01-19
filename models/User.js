@@ -134,12 +134,13 @@ UserSchema.methods.generatePasswordChangeToken = function () {
 
 UserSchema.pre("save", function (next) {
   const user = this;
-  user.isAllFieldsFilled = !!(
+  const isAllFieldsFilled = !!(
     user.profession &&
     user.work &&
     user.workYear &&
     user.goal
   );
+
   user.isActive = isAllFieldsFilled;
   user.point = isAllFieldsFilled ? 29000 : 0;
   next();
