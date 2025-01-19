@@ -365,19 +365,50 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 });
 
 export const updateProfile = asyncHandler(async (req, res, next) => {
-  const user = await User.findByIdAndUpdate(req.userId, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  const isAllFieldsFilled = !!(
+    req.body.profession &&
+    req.body.work &&
+    req.body.workYear &&
+    req.body.goal
+  );
 
-  if (!user) {
-    throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+  const users = User.findById(req.userId);
+
+  // user.isActive = isAllFieldsFilled;
+  // user.point = isAllFieldsFilled ? 29000 : 0;
+  if (isAllFieldsFilled) {
+    const point = users.isActive ? 0 : 29000;
+    const newData = {
+      ...req.body,
+      isActive: isAllFieldsFilled,
+    };
+    const user = await User.findByIdAndUpdate(req.userId, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) {
+      throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } else {
+    const user = await User.findByIdAndUpdate(req.userId, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      throw new MyError(req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.", 400);
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
   }
-
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
 });
 
 export const deleteUser = asyncHandler(async (req, res, next) => {
