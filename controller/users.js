@@ -394,6 +394,20 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
     data: user,
   });
 });
+export const deleteUserMe = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.userId);
+
+  if (!user) {
+    throw new MyError("Хэрэглэгч олдсонгүй", 400);
+  }
+
+  user.remove();
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
 
 export const getToken = async () => {
   const response = await fetch("https://merchant.qpay.mn/v2/auth/token", {

@@ -39,9 +39,21 @@ const UserSchema = new mongoose.Schema({
     enum: ["user", "operator", "admin"],
     default: "user",
   },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
   gifted: {
     type: Boolean,
     default: false,
+  },
+  profession: String,
+  work: String,
+  workYear: String,
+  goal: String,
+  point: {
+    type: Number,
+    default: 0,
   },
   watched: [
     {
@@ -119,5 +131,18 @@ UserSchema.methods.generatePasswordChangeToken = function () {
 
   return resetToken;
 };
+
+UserSchema.pre("save", function (next) {
+  const user = this;
+  user.isAllFieldsFilled = !!(
+    user.profession &&
+    user.work &&
+    user.workYear &&
+    user.goal
+  );
+  user.isActive = isAllFieldsFilled;
+  user.point = isAllFieldsFilled ? 29000 : 0;
+  next();
+});
 
 export default mongoose.model("User", UserSchema);
