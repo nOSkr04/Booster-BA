@@ -374,15 +374,14 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
 
   const users = User.findById(req.userId);
 
-  // user.isActive = isAllFieldsFilled;
-  // user.point = isAllFieldsFilled ? 29000 : 0;
   if (isAllFieldsFilled) {
     const point = users.isActive ? 0 : 29000;
     const newData = {
       ...req.body,
       isActive: isAllFieldsFilled,
+      point,
     };
-    const user = await User.findByIdAndUpdate(req.userId, req.body, {
+    const user = await User.findByIdAndUpdate(req.userId, newData, {
       new: true,
       runValidators: true,
     });
