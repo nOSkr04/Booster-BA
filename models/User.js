@@ -19,6 +19,11 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Нууц үгээ оруулна уу"],
     select: false,
   },
+
+  notificationCount: {
+    default: 0,
+    type: Number,
+  },
   isPayment: {
     type: Boolean,
     default: false,

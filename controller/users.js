@@ -5,7 +5,8 @@ import paginate from "../utils/paginate.js";
 import axios from "axios";
 import Wallet from "../models/Wallet.js";
 import { format, startOfDay } from "date-fns";
-import bcrypt from "bcrypt";
+import sendNotification from "../utils/sendNotification.js";
+import Notification from "../models/Notification.js";
 export const authMeUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.userId);
   if (!user) {
@@ -552,6 +553,15 @@ export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
   const { walletId, userId } = req.params;
   const user = User.findById(userId);
   const wallet = Wallet.findById(walletId);
+  await sendNotification(
+    profile.expoPushToken,
+    `${wallet.bookQuantity} ном амжилттай захиалагдлаа`
+  );
+  await Notification.create({
+    title: `${wallet.bookQuantity} ном амжилттай захиалагдлаа`,
+    users: user._id,
+  });
+  await User.updateOne({ _id: user._id }, { $inc: { notificationCount: 1 } });
   user.set({
     isBoughtBook: true,
     bookBoughtCount: user.bookBoughtCount + wallet.bookQuantity,
@@ -577,6 +587,12 @@ export const invoiceByBookLesson = asyncHandler(async (req, res) => {
   const { walletId, userId } = req.params;
   const user = User.findById(userId);
   const wallet = Wallet.findById(walletId);
+  await sendNotification(profile.expoPushToken, "Сургалт амжилттай идэвхжилээ");
+  await Notification.create({
+    title: "Сургалт амжилттай идэвхжилээ",
+    users: user._id,
+  });
+  await User.updateOne({ _id: user._id }, { $inc: { notificationCount: 1 } });
   user.set({
     isPayment: true,
   });
@@ -593,6 +609,12 @@ export const invoiceByBookPackage = asyncHandler(async (req, res) => {
   const { walletId, userId } = req.params;
   const user = User.findById(userId);
   const wallet = Wallet.findById(walletId);
+  await sendNotification(profile.expoPushToken, "Багц амжилттай идэвхжилээ");
+  await Notification.create({
+    title: "Багц амжилттай идэвхжилээ",
+    users: user._id,
+  });
+  await User.updateOne({ _id: user._id }, { $inc: { notificationCount: 1 } });
   user.set({
     isPayment: true,
     isBoughtBook: true,
@@ -652,6 +674,18 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
     if (type === "lesson") {
       user.isPayment = true;
       wallet.isPayed = true;
+      await sendNotification(
+        profile.expoPushToken,
+        "Сургалт амжилттай идэвхжилээ"
+      );
+      await Notification.create({
+        title: "Сургалт амжилттай идэвхжилээ",
+        users: user._id,
+      });
+      await User.updateOne(
+        { _id: user._id },
+        { $inc: { notificationCount: 1 } }
+      );
       user.save();
       wallet.save();
       res.status(200).json({ success: true });
@@ -668,6 +702,18 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       user.isBoughtBook = true;
       user.bookBoughtCount = user.bookBoughtCount + 1;
       user.bookPaymentDate = bookPayment;
+      await sendNotification(
+        profile.expoPushToken,
+        "Багц амжилттай идэвхжилээ"
+      );
+      await Notification.create({
+        title: "Багц амжилттай идэвхжилээ",
+        users: user._id,
+      });
+      await User.updateOne(
+        { _id: user._id },
+        { $inc: { notificationCount: 1 } }
+      );
       user.save();
       wallet.save();
       res.status(200).json({ success: true });
@@ -683,6 +729,18 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       user.isBoughtBook = true;
       user.bookBoughtCount = user.bookBoughtCount + 1;
       user.bookPaymentDate = bookPayment;
+      await sendNotification(
+        profile.expoPushToken,
+        `${wallet.bookQuantity} ном амжилттай захиалагдлаа`
+      );
+      await Notification.create({
+        title: `${wallet.bookQuantity} ном амжилттай захиалагдлаа`,
+        users: user._id,
+      });
+      await User.updateOne(
+        { _id: user._id },
+        { $inc: { notificationCount: 1 } }
+      );
       user.save();
       wallet.save();
       res.status(200).json({ success: true });
