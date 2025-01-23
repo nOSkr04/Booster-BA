@@ -129,7 +129,7 @@ export const register = asyncHandler(async (req, res, next) => {
 // логин хийнэ
 export const login = asyncHandler(async (req, res, next) => {
   const { phone, password, expoPushToken } = req.body;
-
+  console.log(expoPushToken, "Expo");
   // Оролтыгоо шалгана
 
   if (!phone || !password) {
