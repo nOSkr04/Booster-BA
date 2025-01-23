@@ -24,6 +24,7 @@ import {
   forgotPassword,
   forgotChangePassword,
   deleteUserMe,
+  massSendNotification,
 } from "../controller/users.js";
 
 const router = Router();
@@ -55,6 +56,7 @@ router.route("/create-invoice-by-package").post(createInvoiceByPackage);
 router.route("/create-invoice-by-lesson").post(createInvoiceByLesson);
 router.route("/invoice-check/:id/:type").get(invoiceByQpayCheck);
 router.route("/delete").delete(protect, deleteUserMe);
+router.route("/mass-notification").post(protect, massSendNotification);
 router.route("/:id").get(getUser).put(updateUser).delete(protect, deleteUser);
 
 export default router;

@@ -7,6 +7,7 @@ import Wallet from "../models/Wallet.js";
 import { format, startOfDay } from "date-fns";
 import sendNotification from "../utils/sendNotification.js";
 import Notification from "../models/Notification.js";
+
 export const authMeUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.userId);
   if (!user) {
@@ -425,6 +426,7 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
     data: user,
   });
 });
+
 export const deleteUserMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.userId);
 
@@ -767,4 +769,23 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
 
 export const sendMail = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
+});
+
+export const massSendNotification = asyncHandler(async (req, res) => {
+  const { title, description } = req.body;
+  const users = await User.find();
+  const filteredUsers = users.filter((user) => user.expoPushToken);
+  filteredUsers.map(async (user) => {
+    await sendNotification(user.expoPushToken, description);
+    await Notification.create({
+      title,
+      description,
+      users: user._id,
+    });
+    await User.updateOne({ _id: user._id }, { $inc: { notificationCount: 1 } });
+  });
+
+  res.status(200).json({
+    success: true,
+  });
 });
