@@ -113,7 +113,12 @@ export const register = asyncHandler(async (req, res, next) => {
   const user = await User.create(req.body);
 
   const token = user.getJsonWebToken();
-
+  if (expoPushToken) {
+    user.set({
+      expoPushToken,
+    });
+    user.save();
+  }
   res.status(200).json({
     success: true,
     token,
@@ -123,7 +128,7 @@ export const register = asyncHandler(async (req, res, next) => {
 
 // логин хийнэ
 export const login = asyncHandler(async (req, res, next) => {
-  const { phone, password } = req.body;
+  const { phone, password, expoPushToken } = req.body;
 
   // Оролтыгоо шалгана
 
@@ -150,6 +155,12 @@ export const login = asyncHandler(async (req, res, next) => {
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000000),
     httpOnly: true,
   };
+  if (expoPushToken) {
+    user.set({
+      expoPushToken,
+    });
+    user.save();
+  }
 
   res.status(200).cookie("amazon-token", token, cookieOption).json({
     success: true,
