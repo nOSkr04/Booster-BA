@@ -182,25 +182,37 @@ export const logout = asyncHandler(async (req, res, next) => {
 });
 
 export const getUsers = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const sort = req.query.sort;
-  const select = req.query.select;
+  const { isPayment, isBoughtBook, page, phone } = req.query;
+  const pageNumber = Math.max(Number(page), 1);
+  try {
+    const filters = {};
+    if (isPayment) {
+      filters.isPayment = isPayment;
+    }
+    if (isBoughtBook) {
+      filters.isBoughtBook = isBoughtBook;
+    }
+    if (phone) {
+      filters.phone = {
+        $regex: new RegExp(phone.trim(), "i"),
+      };
+    }
+    const total = await User.countDocuments(filters);
+    const users = await User.find(filters)
+      .skip((pageNumber - 1) * 10)
+      .limit(10)
+      .lean();
+    const totalPages = Math.ceil(total / 10);
 
-  ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
-  const pagination = await paginate(page, limit, User);
-
-  const users = await User.find(req.query, select)
-    .sort(sort)
-    .skip(pagination.start - 1)
-    .limit(limit);
-  res.status(200).json({
-    success: true,
-    data: users,
-    pagination,
-    total: pagination.total,
-    pageCount: pagination.pageCount,
-  });
+    return res.status(200).json({
+      users,
+      total,
+      totalPages,
+      currentPage: pageNumber,
+    });
+  } catch (err) {
+    throw new MyError("Сервер алдаа", 500);
+  }
 });
 
 export const dashboard = asyncHandler(async (req, res, next) => {
