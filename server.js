@@ -22,6 +22,7 @@ import mediasRoutes from "./routes/media.js";
 import bannerRoutes from "./routes/banners.js";
 import articlesRoutes from "./routes/articles.js";
 import categoryRoutes from "./routes/categorys.js";
+import adminRoutes from "./routes/admins.js";
 import notificationsRoutes from "./routes/notifications.js";
 // Аппын тохиргоог process.env рүү ачаалах
 dotenv.config({ path: "./config/config.env" });
@@ -116,6 +117,7 @@ app.use("/lessons", articlesRoutes);
 app.use("/banners", bannerRoutes);
 app.use("/media", mediasRoutes);
 app.use("/category", categoryRoutes);
+app.use("/admin", adminRoutes);
 app.use("/notifications", notificationsRoutes);
 // Алдаа үүсэхэд барьж авч алдааны мэдээллийг клиент тал руу автоматаар мэдээлнэ
 app.use(errorHandler);
