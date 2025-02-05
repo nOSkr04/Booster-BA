@@ -192,10 +192,11 @@ export const getUsers = asyncHandler(async (req, res, next) => {
     if (isBoughtBook) {
       filters.isBoughtBook = isBoughtBook;
     }
-    if (phone) {
-      filters.phone = {
-        $regex: new RegExp(phone.trim(), "i"),
-      };
+    if (phone?.trim()) {
+      filters.$or = [
+        { phone: { $regex: new RegExp(search.trim(), "i") } },
+        { name: { $regex: new RegExp(search.trim(), "i") } },
+      ];
     }
     const total = await User.countDocuments(filters);
     const users = await User.find(filters)
