@@ -3,6 +3,7 @@ import { protect, authorize } from "../middleware/protect.js";
 import {
   lessonPaymentSuccess,
   bookPaymentSuccess,
+  payedDashboard,
 } from "../controller/admins.js";
 
 const router = Router();
@@ -14,5 +15,7 @@ router
 router
   .route("/book-payment")
   .post(protect, authorize("admin", "operator"), bookPaymentSuccess);
+
+router.get("/payedDashboard", payedDashboard);
 
 export default router;

@@ -66,6 +66,12 @@ const UserSchema = new mongoose.Schema({
       ref: "Article",
     },
   ],
+  wallet: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Wallet",
+    },
+  ],
   invoiceId: {
     type: String,
   },

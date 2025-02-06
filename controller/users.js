@@ -598,6 +598,7 @@ export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
         amount: wallet.amount,
       },
     ],
+    wallet: [...user.wallet, wallet._id],
   });
   wallet.set({
     isPayed: true,
@@ -621,6 +622,7 @@ export const invoiceByBookLesson = asyncHandler(async (req, res) => {
   await User.updateOne({ _id: user._id }, { $inc: { notificationCount: 1 } });
   user.set({
     isPayment: true,
+    wallet: [...user.wallet, wallet._id],
   });
   wallet.set({
     isPayed: true,
@@ -652,6 +654,7 @@ export const invoiceByBookPackage = asyncHandler(async (req, res) => {
         amount: wallet.amount,
       },
     ],
+    wallet: [...user.wallet, wallet._id],
   });
   wallet.set({
     isPayed: true,
@@ -712,7 +715,7 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
         { _id: user._id },
         { $inc: { notificationCount: 1 } }
       );
-      user.save();
+      (user.wallet = [...user.wallet, wallet._id]), user.save();
       wallet.save();
       res.status(200).json({ success: true });
     } else if (type === "package") {
@@ -740,7 +743,7 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
         { _id: user._id },
         { $inc: { notificationCount: 1 } }
       );
-      user.save();
+      (user.wallet = [...user.wallet, wallet._id]), user.save();
       wallet.save();
       res.status(200).json({ success: true });
     } else {
@@ -755,10 +758,11 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       user.isBoughtBook = true;
       user.bookBoughtCount = user.bookBoughtCount + 1;
       user.bookPaymentDate = bookPayment;
-      await sendNotification(
-        profile.expoPushToken,
-        `${wallet.bookQuantity} ном амжилттай захиалагдлаа`
-      );
+      (user.wallet = [...user.wallet, wallet._id]),
+        await sendNotification(
+          profile.expoPushToken,
+          `${wallet.bookQuantity} ном амжилттай захиалагдлаа`
+        );
       await Notification.create({
         title: `${wallet.bookQuantity} ном амжилттай захиалагдлаа`,
         users: user._id,
