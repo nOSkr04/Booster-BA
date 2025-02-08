@@ -579,6 +579,7 @@ export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
   const { walletId, userId } = req.params;
   const user = User.findById(userId);
   const wallet = Wallet.findById(walletId);
+  console.log("CONFIRMED", walletId, userId);
   await sendNotification(
     profile.expoPushToken,
     `${wallet.bookQuantity} ном амжилттай захиалагдлаа`
@@ -614,6 +615,7 @@ export const invoiceByBookLesson = asyncHandler(async (req, res) => {
   const { walletId, userId } = req.params;
   const user = User.findById(userId);
   const wallet = Wallet.findById(walletId);
+  console.log("CONFIRMED LESSON", walletId, userId);
   await sendNotification(profile.expoPushToken, "Сургалт амжилттай идэвхжилээ");
   await Notification.create({
     title: "Сургалт амжилттай идэвхжилээ",
@@ -637,6 +639,7 @@ export const invoiceByBookPackage = asyncHandler(async (req, res) => {
   const { walletId, userId } = req.params;
   const user = User.findById(userId);
   const wallet = Wallet.findById(walletId);
+  console.log("PACKAGE", walletId, userId);
   await sendNotification(profile.expoPushToken, "Багц амжилттай идэвхжилээ");
   await Notification.create({
     title: "Багц амжилттай идэвхжилээ",
@@ -670,6 +673,7 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
   const { id, type } = req.params;
   const user = await User.findById(req.userId);
   const wallet = await Wallet.findOne({ invoiceId: id });
+  console.log("QR CONFIRMED", id, type);
   if (!wallet) {
     throw new MyError("Төлбөр амжилтгүй", 402);
   }
@@ -693,6 +697,7 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
     }),
   });
   const data = await response.json();
+  console.log(data, "QPAY DATA!");
   const count = data.count;
   if (count === 0) {
     res.status(200).json({
