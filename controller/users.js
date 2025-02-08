@@ -581,7 +581,7 @@ export const invoiceByBookConfirmed = asyncHandler(async (req, res) => {
   const wallet = Wallet.findById(walletId);
   console.log("CONFIRMED", walletId, userId);
   await sendNotification(
-    profile.expoPushToken,
+    user.expoPushToken,
     `${wallet.bookQuantity} ном амжилттай захиалагдлаа`
   );
   await Notification.create({
@@ -616,7 +616,7 @@ export const invoiceByBookLesson = asyncHandler(async (req, res) => {
   const user = User.findById(userId);
   const wallet = Wallet.findById(walletId);
   console.log("CONFIRMED LESSON", walletId, userId);
-  await sendNotification(profile.expoPushToken, "Сургалт амжилттай идэвхжилээ");
+  await sendNotification(user.expoPushToken, "Сургалт амжилттай идэвхжилээ");
   await Notification.create({
     title: "Сургалт амжилттай идэвхжилээ",
     users: user._id,
@@ -640,7 +640,7 @@ export const invoiceByBookPackage = asyncHandler(async (req, res) => {
   const user = User.findById(userId);
   const wallet = Wallet.findById(walletId);
   console.log("PACKAGE", walletId, userId);
-  await sendNotification(profile.expoPushToken, "Багц амжилттай идэвхжилээ");
+  await sendNotification(user.expoPushToken, "Багц амжилттай идэвхжилээ");
   await Notification.create({
     title: "Багц амжилттай идэвхжилээ",
     users: user._id,
@@ -709,7 +709,7 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       user.isPayment = true;
       wallet.isPayed = true;
       await sendNotification(
-        profile.expoPushToken,
+        user.expoPushToken,
         "Сургалт амжилттай идэвхжилээ"
       );
       await Notification.create({
@@ -736,10 +736,7 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       user.isBoughtBook = true;
       user.bookBoughtCount = user.bookBoughtCount + 1;
       user.bookPaymentDate = bookPayment;
-      await sendNotification(
-        profile.expoPushToken,
-        "Багц амжилттай идэвхжилээ"
-      );
+      await sendNotification(user.expoPushToken, "Багц амжилттай идэвхжилээ");
       await Notification.create({
         title: "Багц амжилттай идэвхжилээ",
         users: user._id,
@@ -765,7 +762,7 @@ export const invoiceByQpayCheck = asyncHandler(async (req, res) => {
       user.bookPaymentDate = bookPayment;
       (user.wallet = [...user.wallet, wallet._id]),
         await sendNotification(
-          profile.expoPushToken,
+          user.expoPushToken,
           `${wallet.bookQuantity} ном амжилттай захиалагдлаа`
         );
       await Notification.create({
