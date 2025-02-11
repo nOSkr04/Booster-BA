@@ -401,6 +401,38 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
   const users = User.findById(req.userId);
 
   if (isAllFieldsFilled) {
+    if (req.body?.isActive) {
+      const point = users.isActive ? 0 : 29000;
+      const newData = {
+        ...req.body,
+        isActive: isAllFieldsFilled,
+        point,
+      };
+      const user = await User.findByIdAndUpdate(req.userId, newData, {
+        new: true,
+        runValidators: true,
+      });
+      await sendNotification(
+        user.expoPushToken,
+        `Бүртгэл амжилттай баталгаажлаа`
+      );
+      await Notification.create({
+        title: `Бүртгэл амжилттай баталгаажлаа`,
+        users: user._id,
+      });
+      if (!user) {
+        throw new MyError(
+          req.params.id + " ID-тэй хэрэглэгч байхгүйээээ.",
+          400
+        );
+      }
+
+      res.status(200).json({
+        success: true,
+        data: user,
+      });
+    }
+
     const point = users.isActive ? 0 : 29000;
     const newData = {
       ...req.body,
