@@ -214,6 +214,7 @@ export const getUsers = asyncHandler(async (req, res, next) => {
       currentPage: pageNumber,
     });
   } catch (err) {
+    console.log(err);
     throw new MyError("Сервер алдаа", 500);
   }
 });
