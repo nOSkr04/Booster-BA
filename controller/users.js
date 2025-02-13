@@ -113,7 +113,7 @@ export const register = asyncHandler(async (req, res, next) => {
   const user = await User.create(req.body);
 
   const token = user.getJsonWebToken();
-  if (expoPushToken) {
+  if (req.body.expoPushToken) {
     user.set({
       expoPushToken,
     });
